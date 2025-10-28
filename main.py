@@ -74,4 +74,12 @@ pokemons_sauvages = [
     Pokemon("Arcanin", "Feu", 25, 9),
     Pokemon("Psykokwak", "Eau", 32, 5),
     Pokemon("Mystherbe", "Plante", 30, 7)
+    
 ]
+
+while True:
+    print("\nQue veux-tu faire ?")
+    print("1. Explorer la route")
+    print("2. Voir ton équipe")
+    print("3. Quitter le jeu")
+    action = input("-> ")
