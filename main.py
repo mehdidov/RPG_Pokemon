@@ -1,3 +1,7 @@
+# main.py
+from pokemon import Pokemon #PokemonFeu, PokemonEau, PokemonPlante
+import random
+
 print(" MINI JEU POKÉMON ")
 
 # Liste des dresseurs 
