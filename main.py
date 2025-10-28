@@ -69,3 +69,9 @@ while True:
 print(f"\nTu as choisi {pokemon['nom']} ({pokemon['type']})")
 
 
+equipe = [pokemon]
+pokemons_sauvages = [
+    Pokemon("Arcanin", "Feu", 25, 9),
+    Pokemon("Psykokwak", "Eau", 32, 5),
+    Pokemon("Mystherbe", "Plante", 30, 7)
+]
