@@ -13,3 +13,16 @@ class Pokemon:
     def soigner(self, montant):
         self.pv = min(self.pv + montant, self.pv_max)
         print(f"{self.nom} récupère {montant} PV. ({self.pv}/{self.pv_max})")
+
+
+class PokemonFeu(Pokemon):
+    def __init__(self):
+        super().__init__("Poussifeu", "Feu", 35, 10)
+
+class PokemonEau(Pokemon):
+    def __init__(self):
+        super().__init__("Grenouss", "Eau", 38, 9)
+
+class PokemonPlante(Pokemon):
+    def __init__(self):
+        super().__init__("Bulbizarre", "Plante", 37, 8)

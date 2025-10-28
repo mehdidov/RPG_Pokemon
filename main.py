@@ -41,18 +41,18 @@ print(f"\nBienvenue {dresseur} 👋 ! Ton aventure commence maintenant.")
 
 
 starters = {
-    "1": {"nom": "Flammion", "type": "Feu"},
-    "2": {"nom": "Aquabulle", "type": "Eau"},
-    "3": {"nom": "Feuillette", "type": "Plante"}
+    "1": {"nom": "Poussifeu", "type": "Feu"},
+    "2": {"nom": "Grenouss", "type": "Eau"},
+    "3": {"nom": "Bulbizarre", "type": "Plante"}
 }
 
 print("\nC’est le moment de choisir ton premier Pokémon !")
 
 while True:
-    print("1. Flammion (Feu)")
-    print("2. Aquabulle (Eau)")
-    print("3. Feuillette (Plante)")
-    choix_pokemon = input("-> ").strip().lower()  # 👈 on convertit en minuscules
+    print("1. Poussifeu (Feu)")
+    print("2. Grenouss (Eau)")
+    print("3. Bulbizarre (Plante)")
+    choix_pokemon = input("-> ").lower()  # 👈 on convertit en minuscules
 
     # Cas 1 : le joueur tape un chiffre
     if choix_pokemon in starters:
