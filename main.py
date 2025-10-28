@@ -1,42 +1,35 @@
-# main.py
-from dresseur import Dresseur
-from arene import Arene
-from combat import combat   # <-- ajoute cette ligne
-import random
+print(" MINI JEU POKÉMON ")
 
+# Liste des dresseurs 
+dresseurs = ["Sacha", "Pierre", "Mehdi", "Iris"]
 
-def jeu():
-    print("===== L'Épreuve des Trois Arènes =====\n")
-
-    # Choisir le dresseur
-    noms = ["Mehdi", "Ayla", "Noah", "Lina"]
-    print("Choisis ton dresseur (nom ou numéro) :")
-    for i, nom in enumerate(noms, 1):
+# Boucle tant qu’aucun choix valide n’a été fait
+while True:
+    print("\nChoisis ton dresseur :")
+    for i, nom in enumerate(dresseurs, 1):
         print(f"{i}. {nom}")
 
-    choix = input("> ")
+    choix = input("-> ")
 
+    # Si on tape un chiffre
     if choix.isdigit():
-        joueur = Dresseur(noms[int(choix) - 1])
-    elif choix in noms:
-        joueur = Dresseur(choix)
+        index = int(choix) - 1
+        if 0 <= index < len(dresseurs):
+            dresseur = dresseurs[index]
+            break  
+        else:
+            print("Veuillez choisir un numéro valide entre 1 et 4.")
+    
+    
+    elif choix.lower() in [n.lower() for n in dresseurs]:
+        for nom in dresseurs:
+            if nom.lower() == choix.lower():
+                dresseur = nom
+                break
+        break  
+
     else:
-        print("Choix invalide, on te donne Mehdi par défaut.")
-        joueur = Dresseur("Mehdi")
+        print("Nom invalide. Essaie encore !")
 
-    # Choisir le Pokémon
-    joueur.choisir_creature()
-
-    # Sélectionner une arène aléatoire
-    types_arenes = ["Feu", "Eau", "Plante"]
-    type_choisi = random.choice(types_arenes)
-    arene = Arene(type_choisi)
-    arene.presenter()
-
-    # Combat
-    combat(joueur, arene.champion)
-
-    print("\nMerci d’avoir joué 👋")
-
-if __name__ == "__main__":
-    jeu()
+# Message final
+print(f"\nBienvenue {dresseur} 👋 ! Ton aventure commence maintenant.")
