@@ -83,3 +83,22 @@ while True:
     print("2. Voir ton équipe")
     print("3. Quitter le jeu")
     action = input("-> ")
+
+
+if action == "1":
+    print("\nTu explores la route...")
+    if random.random() < 0.7:
+        sauvage = random.choice(pokemons_sauvages)
+        print(f"Un {sauvage.nom} sauvage apparaît ! ...")
+        reponse = input("... capturer ? (o/n) -> ").lower()
+        if reponse == "o":
+            if len(equipe) < 6:
+                equipe.append(sauvage)
+                print(f"Tu as capturé {sauvage.nom} !")
+            else:
+                print("Ton équipe est déjà pleine (6 Pokémon max) !")
+        else:
+            print("Tu laisses le Pokémon tranquille.")
+    else:
+        print("Rien à signaler...")
+
