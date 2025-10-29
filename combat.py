@@ -1,5 +1,15 @@
 import random
 
+# --- Tableau d’efficacité des types ---
+def calculer_multiplicateur(type_attaquant, type_defenseur):
+    avantages = {
+        "Feu": {"Plante": 2.0, "Eau": 0.5, "Feu": 0.5},
+        "Eau": {"Feu": 2.0, "Plante": 0.5, "Eau": 0.5},
+        "Plante": {"Eau": 2.0, "Feu": 0.5, "Plante": 0.5},
+    }
+    return avantages.get(type_attaquant, {}).get(type_defenseur, 1.0)
+
+
 def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
     # Trouve le premier Pokémon vivant de l’équipe
     vivants = [p for p in equipe if p.est_vivant()]
@@ -8,6 +18,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
         return "defaite"
 
     pokemon_joueur = vivants[0]
+    modificateur_global = 0.6  # ⚖️ Réduction générale des dégâts
 
     while any(p.est_vivant() for p in equipe) and pokemon_adverse.est_vivant():
         print("\n------------------------------")
@@ -30,9 +41,20 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
             attaque_choisie = pokemon_joueur.choisir_attaque()
             nom_attaque, puissance = attaque_choisie
+
+            mult = calculer_multiplicateur(pokemon_joueur.type, pokemon_adverse.type)
+            degats = int(puissance * mult * modificateur_global)
+
             print(f"\n{pokemon_joueur.nom} attaque {pokemon_adverse.nom} !")
-            print(f"{pokemon_joueur.nom} utilise {nom_attaque} et inflige {puissance} dégâts !")
-            pokemon_adverse.subir_degats(puissance)
+            print(f"{pokemon_joueur.nom} utilise {nom_attaque} !")
+
+            if mult > 1:
+                print("C’est super efficace ! 💥")
+            elif mult < 1:
+                print("Ce n’est pas très efficace...")
+
+            print(f"{pokemon_joueur.nom} inflige {degats} dégâts à {pokemon_adverse.nom} !")
+            pokemon_adverse.subir_degats(degats)
 
         # --- Changer de Pokémon
         elif choix == "2":
@@ -108,11 +130,21 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
         if pokemon_adverse.est_vivant() and pokemon_joueur.est_vivant():
             attaque_adverse = random.choice(pokemon_adverse.attaques)
             nom_attaque, puissance = attaque_adverse
-            print(f"\n{pokemon_adverse.nom} attaque !")
-            print(f"{pokemon_adverse.nom} utilise {nom_attaque} et inflige {puissance} dégâts !")
-            pokemon_joueur.subir_degats(puissance)
+            mult = calculer_multiplicateur(pokemon_adverse.type, pokemon_joueur.type)
+            degats = int(puissance * mult * modificateur_global)
 
-        # --- Si le Pokémon du joueur tombe K.O. pendant le combat
+            print(f"\n{pokemon_adverse.nom} attaque !")
+            print(f"{pokemon_adverse.nom} utilise {nom_attaque} !")
+
+            if mult > 1:
+                print("C’est super efficace ! 💥")
+            elif mult < 1:
+                print("Ce n’est pas très efficace...")
+
+            print(f"{pokemon_adverse.nom} inflige {degats} dégâts à {pokemon_joueur.nom} !")
+            pokemon_joueur.subir_degats(degats)
+
+        # --- Si le Pokémon du joueur tombe K.O.
         if not pokemon_joueur.est_vivant() and any(p.est_vivant() for p in equipe):
             print(f"\n{pokemon_joueur.nom} est K.O. !")
             vivants = [p for p in equipe if p.est_vivant()]
