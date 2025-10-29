@@ -30,8 +30,10 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
     while any(p.est_vivant() for p in equipe) and pokemon_adverse.est_vivant():
         print(f"\n{JAUNE}------------------------------{RESET}")
-        print(f"{BLEU}Ton Pokémon : {BLANC}{pokemon_joueur.nom} ({pokemon_joueur.type}) - {pokemon_joueur.pv}/{pokemon_joueur.pv_max} PV")
-        print(f"{ROUGE}Adversaire : {BLANC}{pokemon_adverse.nom} ({pokemon_adverse.type}) - {pokemon_adverse.pv}/{pokemon_adverse.pv_max} PV")
+        print(f"{BLEU}Ton Pokémon : {BLANC}{pokemon_joueur.nom} ({pokemon_joueur.type}) - "
+              f"Niv. {pokemon_joueur.niveau} - {pokemon_joueur.pv}/{pokemon_joueur.pv_max} PV")
+        print(f"{ROUGE}Adversaire : {BLANC}{pokemon_adverse.nom} ({pokemon_adverse.type}) - "
+              f"{pokemon_adverse.pv}/{pokemon_adverse.pv_max} PV")
         print(f"{JAUNE}------------------------------{RESET}")
 
         print("\nQue veux-tu faire ?")
@@ -81,12 +83,12 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             print("\nChoisis un Pokémon à envoyer :")
             for i, p in enumerate(equipe, 1):
                 etat = "K.O." if not p.est_vivant() else f"{p.pv}/{p.pv_max} PV"
-                print(f"{i}. {p.nom} ({p.type}) - {etat}")
+                print(f"{i}. {p.nom} ({p.type}) - Niv. {p.niveau} - {etat}")
             print("0. Annuler")
 
             choix_poke = input("-> ").strip()
             if choix_poke == "0":
-                continue  # Retour au menu principal
+                continue
             if not choix_poke.isdigit():
                 print("Entrée invalide.")
                 continue
@@ -103,7 +105,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
         # --- Utiliser un objet ---
         elif choix == "3" and inventaire:
-            from items import utiliser_objet_en_combat
+            
 
             print("\nObjets disponibles :")
             compteur = {}
@@ -117,7 +119,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
             choix_objet = input("-> ").strip()
             if choix_objet == "0":
-                continue  # Retour au menu principal
+                continue
             if not choix_objet.isdigit() or int(choix_objet) < 1 or int(choix_objet) > len(objets_dispo):
                 print("Choix invalide.")
                 continue
@@ -127,12 +129,12 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
             print("\nSur quel Pokémon veux-tu utiliser l'objet ?")
             for i, p in enumerate(equipe, 1):
-                print(f"{i}. {p.nom} ({p.pv}/{p.pv_max} PV)")
+                print(f"{i}. {p.nom} ({p.type}) - {p.pv}/{p.pv_max} PV")
             print("0. Annuler")
 
             choix_poke = input("-> ").strip()
             if choix_poke == "0":
-                continue  # Retour au menu principal
+                continue
             if not choix_poke.isdigit():
                 print("Entrée invalide.")
                 continue
@@ -156,7 +158,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             print("Choix invalide.")
             continue
 
-        # --- L’adversaire attaque si toujours vivant ---
+        # --- L’adversaire attaque ---
         if pokemon_adverse.est_vivant() and pokemon_joueur.est_vivant():
             attaque_adverse = random.choice(pokemon_adverse.attaques)
             nom_attaque, puissance = attaque_adverse
@@ -165,7 +167,6 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
             print(f"\n{ROUGE}{pokemon_adverse.nom}{RESET} attaque !")
             print(f"{pokemon_adverse.nom} utilise {JAUNE}{nom_attaque}{RESET} !")
-
             if mult > 1:
                 print(f"{ROUGE}C’est super efficace contre toi ! 💥{RESET}")
             elif mult < 1:
@@ -174,7 +175,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             print(f"{pokemon_adverse.nom} inflige {degats} dégâts à {pokemon_joueur.nom} !")
             pokemon_joueur.subir_degats(degats)
 
-        # --- Si ton Pokémon tombe K.O. ---
+        # --- Pokémon K.O. ---
         if not pokemon_joueur.est_vivant() and any(p.est_vivant() for p in equipe):
             print(f"\n{pokemon_joueur.nom} est {ROUGE}K.O.{RESET} !")
             vivants = [p for p in equipe if p.est_vivant()]
@@ -194,4 +195,9 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
         return "defaite"
     else:
         print(f"\n{VERT}Tu as vaincu {pokemon_adverse.nom} !{RESET}")
+        xp_gagne = random.randint(40, 80)
+        print(f"\nTon équipe gagne {xp_gagne} XP !")
+        for p in equipe:
+            if p.est_vivant():
+                p.gagner_xp(xp_gagne)
         return "victoire"
