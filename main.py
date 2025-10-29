@@ -6,11 +6,7 @@ from items import Potion, SuperPotion, Revive, PokeBall
 import random
 
 # Inventaire du joueur
-inventaire = [
-    Potion(),
-    SuperPotion(),
-    Revive()
-]
+inventaire = []
 
 # Ajoute 7 Potions
 for i in range(7):
@@ -19,7 +15,10 @@ for i in range(7):
 # Ajoute 3 Super Potions
 for i in range(3):
     inventaire.append(SuperPotion())
-    
+
+# Ajoute 1 Rappel
+inventaire.append(Revive())
+
 # Ajoute 15 Poké Balls par défaut
 for i in range(15):
     inventaire.append(PokeBall())
@@ -36,7 +35,6 @@ def afficher_inventaire(inventaire):
 
     for nom, quantite in compteur.items():
         print(f"- {nom} x{quantite}")
-
 
 
 print("MINI JEU POKÉMON ")
@@ -136,6 +134,7 @@ while True:
                 print("3. Fuir")
                 choix_action = input("-> ").lower()
 
+                # --- Combattre ---
                 if choix_action in ["1", "combattre"]:
                     if not equipe[0].est_vivant():
                         print(f"\n{equipe[0].nom} est K.O. ! Il faut le soigner avant de combattre.")
@@ -149,9 +148,23 @@ while True:
                         combat_termine = True
                         break
 
+                # --- Capturer (corrigé ici) ---
                 elif choix_action in ["2", "capturer"]:
-                    chance_capture = random.random()
-                    if chance_capture < 0.60:
+                    # Vérifie si le joueur a une Poké Ball
+                    pokeball = None
+                    for item in inventaire:
+                        if isinstance(item, PokeBall):
+                            pokeball = item
+                            break
+
+                    if not pokeball:
+                        print("\nTu n’as plus de Poké Ball dans ton inventaire !")
+                        continue
+
+                    # Utilisation réelle de la Poké Ball
+                    reussi = pokeball.utiliser(sauvage, inventaire)
+
+                    if reussi:
                         if len(equipe) < 6:
                             equipe.append(sauvage)
                             print(f"Tu as capturé {sauvage.nom} !")
@@ -183,8 +196,9 @@ while True:
                                 combat_termine = True
                                 break
                     else:
-                        print(f"{sauvage.nom} s’est échappé de la Pokéball !")
+                        print(f"{sauvage.nom} s’est échappé de la Poké Ball !")
 
+                # --- Fuir ---
                 elif choix_action in ["3", "fuir"]:
                     print("Tu fuis en sécurité.")
                     combat_termine = True

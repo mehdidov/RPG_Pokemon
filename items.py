@@ -1,60 +1,56 @@
 import random
-class Item:
-    def __init__(self, nom, description):
-        self.nom = nom
-        self.description = description
 
-    def utiliser(self, pokemon):
+class Item:
+    def __init__(self, nom):
+        self.nom = nom
+
+    def utiliser(self, pokemon, inventaire):
+        """Méthode générique à surcharger dans les sous-classes"""
         pass
+
 
 class Potion(Item):
     def __init__(self):
-        super().__init__("Potion", "Restaure 20 PV à un Pokémon")
+        super().__init__("Potion")
 
-    def utiliser(self, pokemon):
-        if pokemon.pv == pokemon.pv_max:
-            print(f"{pokemon.nom} a déjà tous ses PV.")
-        else:
-            pokemon.soigner(20)
-            print(f"Tu utilises une Potion sur {pokemon.nom} !")
+    def utiliser(self, pokemon, inventaire):
+        soin = 20
+        avant = pokemon.pv
+        pokemon.soigner(soin)
+        inventaire.remove(self)
+        print(f"{pokemon.nom} récupère {pokemon.pv - avant} PV grâce à une Potion !")
+
 
 class SuperPotion(Item):
     def __init__(self):
-        super().__init__("Super Potion", "Restaure 50 PV à un Pokémon")
+        super().__init__("Super Potion")
 
-    def utiliser(self, pokemon):
-        if pokemon.pv == pokemon.pv_max:
-            print(f"{pokemon.nom} a déjà tous ses PV.")
-        else:
-            pokemon.soigner(50)
-            print(f"Tu utilises une Super Potion sur {pokemon.nom} !")
+    def utiliser(self, pokemon, inventaire):
+        soin = 50
+        avant = pokemon.pv
+        pokemon.soigner(soin)
+        inventaire.remove(self)
+        print(f"{pokemon.nom} récupère {pokemon.pv - avant} PV grâce à une Super Potion !")
+
 
 class Revive(Item):
     def __init__(self):
-        super().__init__("Rappel", "Ranime un Pokémon K.O. à moitié de ses PV")
+        super().__init__("Rappel")
 
-    def utiliser(self, pokemon):
+    def utiliser(self, pokemon, inventaire):
         if pokemon.est_vivant():
-            print(f"{pokemon.nom} est déjà en pleine forme.")
-        else:
-            pokemon.pv = pokemon.pv_max // 2
-            print(f"{pokemon.nom} est ranimé avec {pokemon.pv} PV !")
+            print(f"{pokemon.nom} n’est pas K.O., le rappel ne sert à rien.")
+            return
+        pokemon.pv = pokemon.pv_max // 2
+        inventaire.remove(self)
+        print(f"{pokemon.nom} est réanimé avec {pokemon.pv} PV !")
 
 
 class PokeBall(Item):
     def __init__(self):
-        super().__init__("Poké Ball", "Permet de capturer un Pokémon sauvage")
+        super().__init__("Poké Ball")
 
-    def utiliser(self, pokemon_sauvage):
-        # Simule la probabilité de capture
+    def utiliser(self, pokemon, inventaire):
         chance_capture = random.random()
-        taux_base = 0.35  # 35 % de base
-        if pokemon_sauvage.pv < pokemon_sauvage.pv_max * 0.3:
-            taux_base += 0.25  # bonus si affaibli
-
-        if chance_capture < taux_base:
-            print(f"Le {pokemon_sauvage.nom} est capturé avec succès !")
-            return True
-        else:
-            print(f"{pokemon_sauvage.nom} s’est échappé de la Poké Ball...")
-            return False
+        inventaire.remove(self)
+        return chance_capture < 0.6
