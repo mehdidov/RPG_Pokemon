@@ -14,11 +14,14 @@ class Potion(Item):
         super().__init__("Potion")
 
     def utiliser(self, pokemon, inventaire):
-        soin = 20
-        avant = pokemon.pv
-        pokemon.soigner(soin)
-        inventaire.remove(self)
-        print(f"{pokemon.nom} récupère {pokemon.pv - avant} PV grâce à une Potion !")
+        if pokemon.est_vivant():
+            soin = 20
+            avant = pokemon.pv
+            pokemon.pv = min(pokemon.pv + soin, pokemon.pv_max)
+            print(f"{pokemon.nom} regagne {pokemon.pv - avant} PV ! ({pokemon.pv}/{pokemon.pv_max})")
+            inventaire.remove(self)
+        else:
+            print(f"{pokemon.nom} est K.O. ! Utilise plutôt un Rappel.")
 
 
 class SuperPotion(Item):
@@ -26,11 +29,14 @@ class SuperPotion(Item):
         super().__init__("Super Potion")
 
     def utiliser(self, pokemon, inventaire):
-        soin = 50
-        avant = pokemon.pv
-        pokemon.soigner(soin)
-        inventaire.remove(self)
-        print(f"{pokemon.nom} récupère {pokemon.pv - avant} PV grâce à une Super Potion !")
+        if pokemon.est_vivant():
+            soin = 50
+            avant = pokemon.pv
+            pokemon.pv = min(pokemon.pv + soin, pokemon.pv_max)
+            print(f"{pokemon.nom} regagne {pokemon.pv - avant} PV ! ({pokemon.pv}/{pokemon.pv_max})")
+            inventaire.remove(self)
+        else:
+            print(f"{pokemon.nom} est K.O. ! Utilise plutôt un Rappel.")
 
 
 class Revive(Item):
@@ -38,12 +44,13 @@ class Revive(Item):
         super().__init__("Rappel")
 
     def utiliser(self, pokemon, inventaire):
-        if pokemon.est_vivant():
-            print(f"{pokemon.nom} n’est pas K.O., le rappel ne sert à rien.")
-            return
-        pokemon.pv = pokemon.pv_max // 2
-        inventaire.remove(self)
-        print(f"{pokemon.nom} est réanimé avec {pokemon.pv} PV !")
+        if not pokemon.est_vivant():
+            pokemon.pv = pokemon.pv_max // 2
+            print(f"{pokemon.nom} est réanimé avec {pokemon.pv} PV !")
+            inventaire.remove(self)
+        else:
+            print(f"{pokemon.nom} est déjà en pleine forme.")
+
 
 
 class PokeBall(Item):
