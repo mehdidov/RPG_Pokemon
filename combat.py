@@ -26,6 +26,15 @@ def lancer_combat(pokemon_joueur, pokemon_sauvage):
         if not pokemon_sauvage.est_vivant():
             print(f"{pokemon_sauvage.nom} est K.O. !")
             break
+         # Riposte de l’adversaire
+        print("\nTour de l’adversaire")
+        pokemon_sauvage.attaquer(pokemon_joueur)
+
+        if not pokemon_joueur.est_vivant():
+            print(f"{pokemon_joueur.nom} est K.O. !")
+            break
+
+    
 
 
        
