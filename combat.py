@@ -33,7 +33,10 @@ def lancer_combat(pokemon_joueur, pokemon_sauvage):
         if not pokemon_joueur.est_vivant():
             print(f"{pokemon_joueur.nom} est K.O. !")
             break
-
+        # Soin léger à la fin du combat
+        if not pokemon_joueur.est_vivant():
+            pokemon_joueur.soigner(20)
+            print(f"{pokemon_joueur.nom} reprend des forces ({pokemon_joueur.pv}/{pokemon_joueur.pv_max} PV)")
     
 
 
