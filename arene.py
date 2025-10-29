@@ -26,7 +26,18 @@ class Arene :
 
             choix = input("-> ")
 
-        
+            if choix == "2":
+                if etage == 0:
+                    print("\nTu quittes l’arène pour te reposer et t’entraîner davantage.")
+                    return False  # sortie complète
+                else:
+                    etage -= 1
+                    print(f"\nTu redescends prudemment à l’étage {etage + 1}...")
+                    continue
+
+            elif choix != "1":
+                print("Choix invalide. Essaie encore.")
+                continue
         
         
         
