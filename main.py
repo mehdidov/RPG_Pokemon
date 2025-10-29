@@ -197,4 +197,19 @@ while True:
             victoire = arene_feu.demarrer_defi(equipe)
             explorations = 0
 
+            if victoire:
+                print("\nTu sors victorieux de l'Arène Pyronis avec le badge Flamme !")
+            else:
+                print("\nTu quittes l'arène pour t'entraîner avant de revenir.")
+
+        else:
+            print("\nTu décides de ne pas entrer et continues ton aventure.")
+
+    elif (action == "3" and not arene_disponible) or (action == "4" and arene_disponible):
+        print("\nMerci d’avoir joué, à bientôt")
+        break
+
+    else:
+        print("Choix invalide, réessaie.")
+
             
