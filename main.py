@@ -1,5 +1,6 @@
 from pokemon import Pokemon, PokemonFeu, PokemonEau, PokemonPlante
 from combat import lancer_combat
+from arene import Arene, CombattantArene
 import random
 
 print("MINI JEU POKÉMON ")
@@ -57,22 +58,29 @@ print(f"\nTu as choisi {pokemon.nom} ({pokemon.type}) !")
 
 # Début de l'aventure
 equipe = [pokemon]
-
 pokemons_sauvages = [
     Pokemon("Arcanin", "Feu", 25, 9),
     Pokemon("Psykokwak", "Eau", 32, 5),
     Pokemon("Mystherbe", "Plante", 30, 7)
 ]
 
+explorations = 0
+arene_disponible = False
+
 while True:
     print("\nQue veux-tu faire ?")
     print("1. Explorer la route")
     print("2. Voir ton équipe")
-    print("3. Quitter le jeu")
+    if arene_disponible:
+        print("3. Aller à l'Arène Pyronis")
+        print("4. Quitter le jeu")
+    else:
+        print("3. Quitter le jeu")
     action = input("-> ").lower()
 
     if action == "1":
         print("\nTu explores la route...")
+        explorations += 1
 
         if random.random() < 0.7:
             modele = random.choice(pokemons_sauvages)
@@ -91,7 +99,6 @@ while True:
                 print("3. Fuir")
                 choix_action = input("-> ").lower()
 
-                # Combat
                 if choix_action in ["1", "combattre"]:
                     if not equipe[0].est_vivant():
                         print(f"\n{equipe[0].nom} est K.O. ! Il faut le soigner avant de combattre.")
@@ -104,7 +111,6 @@ while True:
                         combat_termine = True
                         break
 
-                # Capture 
                 elif choix_action in ["2", "capturer"]:
                     chance_capture = random.random()
                     if chance_capture < 0.60:
@@ -140,9 +146,7 @@ while True:
                                 break
                     else:
                         print(f"{sauvage.nom} s’est échappé de la Pokéball !")
-                        # Le combat continue
 
-                # Fuite 
                 elif choix_action in ["3", "fuir"]:
                     print("Tu fuis en sécurité.")
                     combat_termine = True
@@ -151,13 +155,16 @@ while True:
                 else:
                     print("Choix invalide, réessaie.")
 
-            # Fin de la rencontre
             if combat_termine:
                 print("Tu reprends ta route tranquillement...")
-                continue  
-
+                continue
         else:
             print("Rien à signaler...")
+
+        if explorations >= 3 and not arene_disponible:
+            print("\nTu arrives devant une immense tour enflammée...")
+            print("C’est l’Arène Pyronis, connue pour ses combats intenses !")
+            arene_disponible = True
 
     elif action == "2":
         print(f"\nÉquipe de {dresseur} :")
@@ -165,9 +172,10 @@ while True:
             print(f"{i}. {p.nom} ({p.type}) - {p.pv}/{p.pv_max} PV")
         print(f"Total : {len(equipe)}/6 Pokémon")
 
-    elif action == "3":
-        print("\nMerci d’avoir joué, à bientôt")
-        break
+    elif action == "3" and arene_disponible:
+        print("\nSouhaites-tu entrer dans l’Arène Pyronis ?")
+        print("1. Oui, je veux défier les dresseurs")
+        print("2. Non, je préfère continuer à explorer")
+        choix_arene = input("-> ").lower()
 
-    else:
-        print("Choix invalide, réessaie.")
+        
