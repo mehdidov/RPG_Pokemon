@@ -27,3 +27,14 @@ class SuperPotion(Item):
         else:
             pokemon.soigner(50)
             print(f"Tu utilises une Super Potion sur {pokemon.nom} !")
+
+class Revive(Item):
+    def __init__(self):
+        super().__init__("Rappel", "Ranime un Pokémon K.O. à moitié de ses PV")
+
+    def utiliser(self, pokemon):
+        if pokemon.est_vivant():
+            print(f"{pokemon.nom} est déjà en pleine forme.")
+        else:
+            pokemon.pv = pokemon.pv_max // 2
+            print(f"{pokemon.nom} est ranimé avec {pokemon.pv} PV !")
