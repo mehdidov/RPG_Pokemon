@@ -12,7 +12,17 @@ class Arene :
         print(f"\nDébut du défi de l'{self.nom} !")
         print("Ton premier Pokémon se prépare à combattre")
 
-        for i, dresseur in enumerate(self.dresseurs, 1):
+        etage = 0
+        while etage < len(self.dresseurs):
+            dresseur = self.dresseurs[etage]
+            print(f"\nÉtage {etage + 1} : tu affrontes {dresseur.nom} avec son {dresseur.pokemon.nom} ({dresseur.pokemon.type}) !")
+
+        
+        
+        
+        
+        
+        """for i, dresseur in enumerate(self.dresseurs, 1):
             print(f"\n⬆Étage {i} : tu affrontes {dresseur.nom} avec son {dresseur.pokemon.nom} ({dresseur.pokemon.type}) !")
 
             resultat = lancer_combat(equipe, dresseur.pokemon, choix_libre=False)
@@ -28,7 +38,7 @@ class Arene :
                     print(f"Tu as vaincu le champion {dresseur.nom} !")
 
         print(f"\nFélicitations ! Tu remportes le badge {self.badge} !")
-        return True
+        return True"""
 
 class CombattantArene : 
     def __init__(self, nom, pokemon):
