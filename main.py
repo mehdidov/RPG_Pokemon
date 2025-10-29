@@ -12,9 +12,31 @@ inventaire = [
     Revive()
 ]
 
+# Ajoute 7 Potions
+for i in range(7):
+    inventaire.append(Potion())
+
+# Ajoute 3 Super Potions
+for i in range(3):
+    inventaire.append(SuperPotion())
+    
 # Ajoute 15 Poké Balls par défaut
 for i in range(15):
     inventaire.append(PokeBall())
+
+def afficher_inventaire(inventaire):
+    if not inventaire:
+        print("\nTon sac est vide.")
+        return
+
+    print("\n🎒 Inventaire :")
+    compteur = {}
+    for item in inventaire:
+        compteur[item.nom] = compteur.get(item.nom, 0) + 1
+
+    for nom, quantite in compteur.items():
+        print(f"- {nom} x{quantite}")
+
 
 
 print("MINI JEU POKÉMON ")
@@ -85,11 +107,12 @@ while True:
     print("\nQue veux-tu faire ?")
     print("1. Explorer la route")
     print("2. Voir ton équipe")
+    print("3. Voir ton inventaire")
     if arene_disponible:
-        print("3. Aller à l'Arène Pyronis")
-        print("4. Quitter le jeu")
+        print("4. Aller à l'Arène Pyronis")
+        print("5. Quitter le jeu")
     else:
-        print("3. Quitter le jeu")
+        print("4. Quitter le jeu")
     action = input("-> ").lower()
 
     if action == "1":
@@ -187,7 +210,10 @@ while True:
             print(f"{i}. {p.nom} ({p.type}) - {p.pv}/{p.pv_max} PV")
         print(f"Total : {len(equipe)}/6 Pokémon")
 
-    elif action == "3" and arene_disponible:
+    elif action == "3":
+        afficher_inventaire(inventaire)
+
+    elif action == "4" and arene_disponible:
         print("\nSouhaites-tu entrer dans l’Arène Pyronis ?")
         print("1. Oui, je veux défier les dresseurs")
         print("2. Non, je préfère continuer à explorer")
@@ -200,7 +226,7 @@ while True:
                 CombattantArene("Steven", Pokemon("Caninos", "Feu", 42, 15)),
                 CombattantArene("Aulne", Pokemon("Goupix", "Feu", 43, 13)),
                 CombattantArene("Cynthia", Pokemon("Magby", "Feu", 44, 15)),
-                CombattantArene("Cendre", Pokemon("Salamèche", "Feu", 45, 15 )),
+                CombattantArene("Cendre", Pokemon("Salamèche", "Feu", 45, 15)),
                 CombattantArene("Rouge le Champion", Pokemon("Simiabraz", "Feu", 47, 17))
             ]
 
@@ -209,7 +235,7 @@ while True:
             print(f"\nBienvenue dans l'{arene_feu.nom} (type {arene_feu.type}) !")
             print("Tu devras gravir les 5 étages et battre chaque dresseur pour atteindre le champion.")
             print("Les fuites sont interdites ici !")
-            victoire = arene_feu.demarrer_defi(equipe)
+            victoire = arene_feu.demarrer_defi(equipe, inventaire)
             explorations = 0
 
             if victoire:
@@ -220,11 +246,9 @@ while True:
         else:
             print("\nTu décides de ne pas entrer et continues ton aventure.")
 
-    elif (action == "3" and not arene_disponible) or (action == "4" and arene_disponible):
+    elif (action == "4" and not arene_disponible) or (action == "5" and arene_disponible):
         print("\nMerci d’avoir joué, à bientôt")
         break
 
     else:
         print("Choix invalide, réessaie.")
-
-            
