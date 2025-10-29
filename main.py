@@ -59,9 +59,9 @@ print(f"\nTu as choisi {pokemon.nom} ({pokemon.type}) !")
 # Début de l'aventure
 equipe = [pokemon]
 pokemons_sauvages = [
-    Pokemon("Arcanin", "Feu", 25, 9),
-    Pokemon("Psykokwak", "Eau", 32, 5),
-    Pokemon("Mystherbe", "Plante", 30, 7)
+    Pokemon("Rattata", "Normal", 39, 12),
+    Pokemon("Psykokwak", "Eau", 40, 12),
+    Pokemon("Evoli", "Normal", 40, 11)
 ]
 
 explorations = 0
@@ -178,4 +178,15 @@ while True:
         print("2. Non, je préfère continuer à explorer")
         choix_arene = input("-> ").lower()
 
-        
+        if choix_arene == "1":
+            print("\nTu entres dans l'Arène Pyronis.")
+
+            dresseurs_feu = [
+                CombattantArene("Steven", Pokemon("Caninos", "Feu", 42, 15)),
+                CombattantArene("Aulne", Pokemon("Goupix", "Feu", 43, 13)),
+                CombattantArene("Cynthia", Pokemon("Magby", "Feu", 44, 15)),
+                CombattantArene("Cendre", Pokemon("Salamèche", "Feu", 45, 15 )),
+                CombattantArene("Rouge le Champion", Pokemon("Simiabraz", "Feu", 47, 17))
+            ]
+
+            
