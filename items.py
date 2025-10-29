@@ -1,3 +1,4 @@
+import random
 class Item:
     def __init__(self, nom, description):
         self.nom = nom
@@ -38,3 +39,22 @@ class Revive(Item):
         else:
             pokemon.pv = pokemon.pv_max // 2
             print(f"{pokemon.nom} est ranimé avec {pokemon.pv} PV !")
+
+
+class PokeBall(Item):
+    def __init__(self):
+        super().__init__("Poké Ball", "Permet de capturer un Pokémon sauvage")
+
+    def utiliser(self, pokemon_sauvage):
+        # Simule la probabilité de capture
+        chance_capture = random.random()
+        taux_base = 0.35  # 35 % de base
+        if pokemon_sauvage.pv < pokemon_sauvage.pv_max * 0.3:
+            taux_base += 0.25  # bonus si affaibli
+
+        if chance_capture < taux_base:
+            print(f"Le {pokemon_sauvage.nom} est capturé avec succès !")
+            return True
+        else:
+            print(f"{pokemon_sauvage.nom} s’est échappé de la Poké Ball...")
+            return False

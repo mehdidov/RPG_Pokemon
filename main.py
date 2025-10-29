@@ -1,7 +1,21 @@
 from pokemon import Pokemon, PokemonFeu, PokemonEau, PokemonPlante
 from combat import lancer_combat
 from arene import Arene, CombattantArene
+from items import Potion, SuperPotion, Revive, PokeBall
+
 import random
+
+# Inventaire du joueur
+inventaire = [
+    Potion(),
+    SuperPotion(),
+    Revive()
+]
+
+# Ajoute 15 Poké Balls par défaut
+for i in range(15):
+    inventaire.append(PokeBall())
+
 
 print("MINI JEU POKÉMON ")
 
