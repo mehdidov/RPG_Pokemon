@@ -1,9 +1,15 @@
 import random
 
 def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
-    pokemon_joueur = equipe[0]
+    # Trouve le premier Pokémon vivant de l’équipe
+    vivants = [p for p in equipe if p.est_vivant()]
+    if not vivants:
+        print("\nTous tes Pokémon sont K.O. ! Tu ne peux pas combattre.")
+        return "defaite"
 
-    while pokemon_joueur.est_vivant() and pokemon_adverse.est_vivant():
+    pokemon_joueur = vivants[0]
+
+    while any(p.est_vivant() for p in equipe) and pokemon_adverse.est_vivant():
         print("\n------------------------------")
         print(f"Ton Pokémon : {pokemon_joueur.nom} ({pokemon_joueur.pv}/{pokemon_joueur.pv_max} PV)")
         print(f"Adversaire : {pokemon_adverse.nom} ({pokemon_adverse.pv}/{pokemon_adverse.pv_max} PV)")
@@ -18,6 +24,10 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
         # --- Attaquer
         if choix == "1":
+            if not pokemon_joueur.est_vivant():
+                print(f"\n{pokemon_joueur.nom} est K.O. et ne peut pas attaquer !")
+                continue
+
             attaque_choisie = pokemon_joueur.choisir_attaque()
             nom_attaque, puissance = attaque_choisie
             print(f"\n{pokemon_joueur.nom} attaque {pokemon_adverse.nom} !")
@@ -47,10 +57,8 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
         # --- Utiliser un objet
         elif choix == "3" and inventaire:
-            # Import ici pour éviter dépendance circulaire
             from items import utiliser_objet_en_combat
 
-            # Affiche les objets disponibles
             print("\nObjets disponibles :")
             compteur = {}
             for item in inventaire:
@@ -68,7 +76,6 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             objet_nom = objets_dispo[int(choix_objet) - 1]
             objet = next((it for it in inventaire if it.nom == objet_nom), None)
 
-            # Demande sur quel Pokémon utiliser l’objet
             print("\nSur quel Pokémon veux-tu utiliser l'objet ?")
             for i, p in enumerate(equipe, 1):
                 print(f"{i}. {p.nom} ({p.pv}/{p.pv_max} PV)")
@@ -98,17 +105,31 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             continue
 
         # --- L’adversaire attaque si toujours vivant
-        if pokemon_adverse.est_vivant():
+        if pokemon_adverse.est_vivant() and pokemon_joueur.est_vivant():
             attaque_adverse = random.choice(pokemon_adverse.attaques)
             nom_attaque, puissance = attaque_adverse
             print(f"\n{pokemon_adverse.nom} attaque !")
             print(f"{pokemon_adverse.nom} utilise {nom_attaque} et inflige {puissance} dégâts !")
             pokemon_joueur.subir_degats(puissance)
 
+        # --- Si le Pokémon du joueur tombe K.O. pendant le combat
+        if not pokemon_joueur.est_vivant() and any(p.est_vivant() for p in equipe):
+            print(f"\n{pokemon_joueur.nom} est K.O. !")
+            vivants = [p for p in equipe if p.est_vivant()]
+            print("Choisis un autre Pokémon pour continuer le combat :")
+            for i, p in enumerate(vivants, 1):
+                print(f"{i}. {p.nom} ({p.type}) - {p.pv}/{p.pv_max} PV")
+            choix = input("-> ").strip()
+            if choix.isdigit() and 1 <= int(choix) <= len(vivants):
+                pokemon_joueur = vivants[int(choix) - 1]
+                print(f"\nTu envoies {pokemon_joueur.nom} !")
+            else:
+                print("Choix invalide. Tu perds ton tour.")
+
     # --- Fin du combat
-    if pokemon_joueur.est_vivant():
+    if not any(p.est_vivant() for p in equipe):
+        print("\nTous tes Pokémon sont K.O. ! Tu as perdu le combat.")
+        return "defaite"
+    else:
         print(f"\nTu as vaincu {pokemon_adverse.nom} !")
         return "victoire"
-    else:
-        print(f"\n{pokemon_joueur.nom} est K.O. !")
-        return "defaite"
