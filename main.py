@@ -103,7 +103,8 @@ while True:
                     if not equipe[0].est_vivant():
                         print(f"\n{equipe[0].nom} est K.O. ! Il faut le soigner avant de combattre.")
                         continue
-                    resultat = lancer_combat(equipe[0], sauvage, choix_libre=True)
+                    resultat = lancer_combat(equipe, sauvage, choix_libre=True)
+
                     if resultat == "annule":
                         continue
                     elif resultat == "victoire":

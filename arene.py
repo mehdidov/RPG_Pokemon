@@ -15,7 +15,8 @@ class Arene :
         for i, dresseur in enumerate(self.dresseurs, 1):
             print(f"\n⬆Étage {i} : tu affrontes {dresseur.nom} avec son {dresseur.pokemon.nom} ({dresseur.pokemon.type}) !")
 
-            resultat = lancer_combat(equipe[0], dresseur.pokemon, choix_libre=False)
+            resultat = lancer_combat(equipe, dresseur.pokemon, choix_libre=False)
+
 
             if resultat != "victoire":
                 print(f"\nTu as perdu contre {dresseur.nom} à l’étage {i}... Tu es expulsé de l’arène.")
