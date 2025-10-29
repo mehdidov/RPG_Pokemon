@@ -20,4 +20,12 @@ def lancer_combat(pokemon_joueur, pokemon_sauvage):
             print("Choix invalide, une attaque aléatoire sera utilisée.")
             attaque_choisie = random.choice(pokemon_joueur.attaques)
 
-        
+        # Attaque du dresseur
+        pokemon_joueur.attaquer(pokemon_sauvage, attaque_choisie)
+
+        if not pokemon_sauvage.est_vivant():
+            print(f"{pokemon_sauvage.nom} est K.O. !")
+            break
+
+
+       
