@@ -1,30 +1,32 @@
+# =====================================================
+# Fichier : main.py
+# Point d’entrée du jeu Pokémon (exploration, arènes, inventaire, etc.)
+# =====================================================
+
 from pokemon import Pokemon, PokemonFeu, PokemonEau, PokemonPlante
 from combat import lancer_combat
 from arene import Arene, CombattantArene
 from items import Potion, SuperPotion, Revive, PokeBall
 import random
 
-# ---------------------------------
+# =====================================================
 # INVENTAIRE INITIAL DU JOUEUR
-# ---------------------------------
+# =====================================================
 inventaire = []
 
-# Ajoute 7 Potions
+# Ajout de potions et objets de départ
 for i in range(7):
     inventaire.append(Potion())
-
-# Ajoute 3 Super Potions
 for i in range(3):
     inventaire.append(SuperPotion())
-
-# Ajoute 1 Rappel
 inventaire.append(Revive())
-
-# Ajoute 15 Poké Balls par défaut
 for i in range(15):
     inventaire.append(PokeBall())
 
 
+# =====================================================
+# FONCTION D’AFFICHAGE DE L’INVENTAIRE
+# =====================================================
 def afficher_inventaire(inventaire):
     if not inventaire:
         print("\nTon sac est vide.")
@@ -34,14 +36,13 @@ def afficher_inventaire(inventaire):
     compteur = {}
     for item in inventaire:
         compteur[item.nom] = compteur.get(item.nom, 0) + 1
-
     for nom, quantite in compteur.items():
         print(f"- {nom} x{quantite}")
 
 
-# ---------------------------------
-# AIDES
-# ---------------------------------
+# =====================================================
+# CRÉATION DES ARÈNES
+# =====================================================
 def creer_arene_feu():
     dresseurs_feu = [
         CombattantArene("Steven", Pokemon("Caninos", "Feu", 42, [("Charge", 10), ("Crocs Feu", 13), ("Flammèche", 12), ("Bélier", 15)])),
@@ -59,7 +60,7 @@ def creer_arene_plante():
         CombattantArene("Théo", Pokemon("Chétiflor", "Plante", 49, [("Fouet Lianes", 12), ("Tranch’Herbe", 14), ("Tranch’Feuille", 16), ("Canon Graine", 15)])),
         CombattantArene("Flora", Pokemon("Ortide", "Plante", 50, [("Poudre Dodo", 0), ("Acide", 12), ("Tranch’Herbe", 16), ("Giga-Sangsue", 18)])),
         CombattantArene("Léa", Pokemon("Rosélia", "Plante", 51, [("Méga-Sangsue", 16), ("Tranch’Herbe", 16), ("Canon Graine", 17), ("Dard-Venin", 12)])),
-        CombattantArene("Erable la Championne", Pokemon("Empiflor", "Plante", 53, [("Tranch’Feuille", 18), ("Canon Graine", 18), ("Vampigraine", 0), ("Mégafouet", 20)])),
+        CombattantArene("Érable la Championne", Pokemon("Empiflor", "Plante", 53, [("Tranch’Feuille", 18), ("Canon Graine", 18), ("Vampigraine", 0), ("Mégafouet", 20)])),
     ]
     return Arene("Arène Verdania", "Plante", "Badge Verdure", dresseurs_plante)
 
@@ -75,26 +76,23 @@ def creer_arene_eau():
     return Arene("Arène Hydrolys", "Eau", "Badge Cascade", dresseurs_eau)
 
 
+# =====================================================
+# RENCONTRES SAUVAGES SELON L’ÉTAPE
+# =====================================================
 def pool_sauvage_etape(etape):
-    """
-    etape:
-      0 -> avant l'Arène Feu (donner un avantage contre Feu) => +Eau
-      1 -> avant l'Arène Plante (donner un avantage contre Plante) => +Feu
-     2+ -> avant l'Arène Eau (donner un avantage contre Eau) => +Plante
-    """
-    if etape == 0:
+    if etape == 0:  # avant l’arène Feu → Pokémon Eau
         return [
-            Pokemon("Psykokwak", "Eau", 40, [("Pistolet à O", 10), ("Coup de tête", 11), ("Bec Vrille", 13), ("Hydroqueue", 15)]),
+            Pokemon("Psykokwak", "Eau", 40, [("Pistolet à O", 10), ("Coup de Tête", 11), ("Bec Vrille", 13), ("Hydroqueue", 15)]),
             Pokemon("Carapuce", "Eau", 41, [("Écume", 10), ("Pistolet à O", 12), ("Coup de Queue", 14), ("Hydroqueue", 16)]),
             Pokemon("Evoli", "Normal", 40, [("Charge", 8), ("Morsure", 10), ("Coup d’Boule", 12), ("Vive-Attaque", 14)]),
         ]
-    elif etape == 1:
+    elif etape == 1:  # avant l’arène Plante → Pokémon Feu
         return [
             Pokemon("Caninos", "Feu", 44, [("Charge", 10), ("Crocs Feu", 14), ("Flammèche", 12), ("Bélier", 15)]),
             Pokemon("Goupix", "Feu", 44, [("Flammèche", 12), ("Rugissement", 0), ("Lance-Flamme", 18), ("Queue de Fer", 14)]),
-            Pokemon("Roucool", "Normal", 43, [("Tornade", 12), ("Cru-Aile", 14), ("Vive-Attaque", 14), ("Jet de Sable", 0)]),  # Vol (type non géré mais ok en "Normal" ici)
+            Pokemon("Roucool", "Normal", 43, [("Tornade", 12), ("Cru-Aile", 14), ("Vive-Attaque", 14), ("Jet de Sable", 0)]),
         ]
-    else:
+    else:  # avant l’arène Eau → Pokémon Plante
         return [
             Pokemon("Chétiflor", "Plante", 48, [("Fouet Lianes", 12), ("Tranch’Herbe", 14), ("Tranch’Feuille", 16), ("Canon Graine", 16)]),
             Pokemon("Mystherbe", "Plante", 49, [("Poudre Dodo", 0), ("Méga-Sangsue", 16), ("Tranch’Herbe", 16), ("Acide", 12)]),
@@ -102,41 +100,27 @@ def pool_sauvage_etape(etape):
         ]
 
 
-# ---------------------------------
-# CHOIX DU DRESSEUR
-# ---------------------------------
-print("MINI JEU POKÉMON ")
+# =====================================================
+# CHOIX DU DRESSEUR ET DU STARTER
+# =====================================================
+print("MINI JEU POKÉMON 🎮")
 
 dresseurs = ["Sacha", "Pierre", "Mehdi", "Iris"]
-
 while True:
     print("\nChoisis ton dresseur :")
     for i, nom in enumerate(dresseurs, 1):
         print(f"{i}. {nom}")
-
     choix = input("-> ").strip()
-
-    if choix.isdigit():
-        index = int(choix) - 1
-        if 0 <= index < len(dresseurs):
-            dresseur = dresseurs[index]
-            break
-        else:
-            print("Numéro invalide, réessaie.")
+    if choix.isdigit() and 1 <= int(choix) <= len(dresseurs):
+        dresseur = dresseurs[int(choix) - 1]
+        break
     elif choix.lower() in [n.lower() for n in dresseurs]:
-        for nom in dresseurs:
-            if nom.lower() == choix.lower():
-                dresseur = nom
-                break
+        dresseur = choix.capitalize()
         break
     else:
-        print("Nom invalide, réessaie.")
+        print("Choix invalide, réessaie.")
 
 print(f"\nBienvenue {dresseur} ! Ton aventure commence maintenant.")
-
-# ---------------------------------
-# CHOIX DU STARTER
-# ---------------------------------
 print("\nC’est le moment de choisir ton premier Pokémon !")
 print("1. Poussifeu (Feu)")
 print("2. Grenouss (Eau)")
@@ -158,19 +142,17 @@ while True:
 
 print(f"\nTu as choisi {pokemon.nom} ({pokemon.type}) !")
 
-# ---------------------------------
-# ÉTAT D’AVANCEMENT
-# ---------------------------------
+# =====================================================
+# VARIABLES DE PROGRESSION
+# =====================================================
 equipe = [pokemon]
-
-# etape 0 = avant arène Feu ; 1 = avant arène Plante ; 2 = avant arène Eau ; 3 = toutes faites
 etape = 0
 explorations = 0
 
-# arènes disponibles selon l’étape
+
 def arene_disponible_nom(etape):
     if etape == 0:
-        return None  # pas encore Pyronis
+        return None
     elif etape == 1:
         return "Arène Pyronis"
     elif etape == 2:
@@ -180,38 +162,34 @@ def arene_disponible_nom(etape):
     else:
         return None
 
+
 def afficher_menu(etape):
     print("\nQue veux-tu faire ?")
     print("1. Explorer la route")
     print("2. Voir ton équipe")
     print("3. Voir ton inventaire")
     print("4. Utiliser un objet")
-
     nom_arene = arene_disponible_nom(etape)
-    if nom_arene is None:
-        print("5. Quitter le jeu")
-    else:
+    if nom_arene:
         print(f"5. Aller à {nom_arene}")
         print("6. Quitter le jeu")
+    else:
+        print("5. Quitter le jeu")
 
 
-# ---------------------------------
+# =====================================================
 # BOUCLE PRINCIPALE DU JEU
-# ---------------------------------
+# =====================================================
 while True:
     afficher_menu(etape)
     action = input("-> ").lower()
 
-    # --- Explorer la route
+    # --- Exploration ---
     if action == "1":
         print("\nTu explores la route...")
         explorations += 1
-
-        # Probabilité de rencontre
         if random.random() < 0.7:
-            modele = random.choice(pool_sauvage_etape(etape if etape < 3 else 2))
-            sauvage = Pokemon(modele.nom, modele.type, modele.pv_max, modele.attaques)
-
+            sauvage = random.choice(pool_sauvage_etape(min(etape, 2)))
             print(f"Un {sauvage.nom} sauvage apparaît ! (Type {sauvage.type}, {sauvage.pv} PV)")
 
             while sauvage.est_vivant() and any(p.est_vivant() for p in equipe):
@@ -221,99 +199,81 @@ while True:
                 print("3. Fuir")
                 choix_action = input("-> ").lower()
 
-                # --- Combat
                 if choix_action == "1":
-                    if not equipe[0].est_vivant():
-                        print(f"\n{equipe[0].nom} est K.O. ! Il faut le soigner avant de combattre.")
-                        continue
-                    resultat = lancer_combat(equipe, sauvage, inventaire, choix_libre=True)
-
-                    if resultat == "victoire":
-                        # tu as vaincu le sauvage (gain d’XP non géré ici)
-                        break
-                    elif resultat == "annule":
-                        continue
-
-                # --- Capture
+                    lancer_combat(equipe, sauvage, inventaire)
+                    break
                 elif choix_action == "2":
                     pokeball = next((obj for obj in inventaire if obj.nom == "Poké Ball"), None)
                     if not pokeball:
                         print("Tu n’as plus de Poké Ball !")
                         continue
-
-                    reussi = pokeball.utiliser(sauvage, inventaire)
-                    if reussi:
-                        if len(equipe) < 6:
-                            equipe.append(sauvage)
-                            print(f"✨ Tu as capturé {sauvage.nom} !")
-                        else:
-                            print(f"Ton équipe est pleine. {sauvage.nom} a été envoyé au PC.")
+                    if pokeball.utiliser(sauvage, inventaire):
+                        equipe.append(sauvage)
+                        print(f"✨ Tu as capturé {sauvage.nom} !")
                         break
                     else:
                         print(f"{sauvage.nom} s’est échappé !")
-
-                # --- Fuite
                 elif choix_action == "3":
-                    print("Tu fuis le combat en sécurité.")
+                    print("Tu fuis le combat.")
                     break
-
                 else:
                     print("Choix invalide.")
         else:
             print("Rien à signaler aujourd’hui.")
 
-        # Déblocage des arènes par étape :
-        # - etape 0 (début) -> après 3 explorations, Pyronis devient dispo => on passe à etape 1
-        # - etape 1 -> Verdania devient dispo quand on a battu Pyronis (géré ailleurs)
-        # - etape 2 -> Hydrolys devient dispo quand on a battu Verdania (géré ailleurs)
         if etape == 0 and explorations >= 3:
-            print("\n🔥 Tu arrives devant une immense tour enflammée : l’Arène Pyronis !")
-            etape = 1  # Pyronis accessible
+            print("\n🔥 Tu découvres l’Arène Pyronis ! Elle est maintenant accessible.")
+            etape = 1
 
-    # --- Voir l’équipe
+    # --- Voir équipe ---
     elif action == "2":
         print(f"\nÉquipe de {dresseur} :")
         for i, p in enumerate(equipe, 1):
             etat = "K.O." if not p.est_vivant() else f"{p.pv}/{p.pv_max} PV"
-            print(f"{i}. {p.nom} ({p.type}) - {etat}")
-        print(f"Total : {len(equipe)}/6 Pokémon")
+            print(f"{i}. {p.nom} ({p.type}) - Niv. {p.niveau} - {etat}")
 
-    # --- Voir inventaire
+    # --- Inventaire ---
     elif action == "3":
         afficher_inventaire(inventaire)
 
-    # --- Utiliser un objet (hors combat)
+    # --- Utiliser un objet (hors combat) ---
+        # --- Utiliser un objet (hors combat)
     elif action == "4":
         if not inventaire:
             print("\nTon sac est vide.")
             continue
 
+        # --- Regroupement des objets similaires
         compteur = {}
         for item in inventaire:
             compteur[item.nom] = compteur.get(item.nom, 0) + 1
         objets_dispo = list(compteur.keys())
 
-        print("\n🎒 Objets disponibles :")
+        print("\n🎒 Inventaire :")
         for i, nom in enumerate(objets_dispo, 1):
             print(f"{i}. {nom} x{compteur[nom]}")
+        print("0. Annuler")
 
-        choix = input("Quel objet veux-tu utiliser ? -> ").strip()
-        if not choix.isdigit():
-            print("Entrée invalide.")
+        # --- Choix de l'objet à utiliser
+        choix = input("\nChoisis un objet à utiliser (ou 0 pour annuler)\n-> ").strip()
+        if choix == "0":
             continue
-        index = int(choix) - 1
-        if index < 0 or index >= len(objets_dispo):
+        if not choix.isdigit() or int(choix) < 1 or int(choix) > len(objets_dispo):
             print("Choix invalide.")
             continue
 
-        nom_objet = objets_dispo[index]
+        nom_objet = objets_dispo[int(choix) - 1]
         objet = next((it for it in inventaire if it.nom == nom_objet), None)
 
+        # --- Choix du Pokémon cible
         print("\nSur quel Pokémon veux-tu utiliser l'objet ?")
         for i, p in enumerate(equipe, 1):
-            print(f"{i}. {p.nom} ({p.pv}/{p.pv_max} PV)")
+            print(f"{i}. {p.nom} ({p.type}) - {p.pv}/{p.pv_max} PV")
+        print("0. Annuler")
 
         choix_poke = input("-> ").strip()
+        if choix_poke == "0":
+            continue
         if not choix_poke.isdigit():
             print("Entrée invalide.")
             continue
@@ -321,91 +281,46 @@ while True:
         index_poke = int(choix_poke) - 1
         if 0 <= index_poke < len(equipe):
             cible = equipe[index_poke]
-            # On passe la cible même si l'objet ne la nécessite pas
-            res = objet.utiliser(cible, inventaire)
-            # certains objets renvoient None (ex: Potion), c'est ok
+            resultat = objet.utiliser(cible, inventaire)
+            if resultat:
+                print(f"{cible.nom} profite de {objet.nom} !")
+            else:
+                print("L’objet n’a pas été utilisé.")
         else:
             print("Choix invalide.")
 
-    # --- Aller à l’Arène (selon l’étape)
-    elif (action == "5" and arene_disponible_nom(etape) is not None):
+
+    # --- Aller à une Arène ---
+    elif action == "5" and arene_disponible_nom(etape):
         nom_arene = arene_disponible_nom(etape)
 
+        # Arène Feu
         if nom_arene == "Arène Pyronis":
-            print("\nSouhaites-tu entrer dans l’Arène Pyronis ?")
-            print("1. Oui, je veux défier les dresseurs")
-            print("2. Non, je préfère continuer à explorer")
-            choix_arene = input("-> ").lower()
+            print("\n🔥 Tu entres dans l’Arène Pyronis...")
+            victoire = creer_arene_feu().demarrer_defi(equipe, inventaire)
+            if victoire:
+                print("\nTu gagnes le Badge Flamme ! 🌋")
+                etape = 2
 
-            if choix_arene == "1":
-                print("\nTu entres dans l'Arène Pyronis...")
-                arene_feu = creer_arene_feu()
-                victoire = arene_feu.demarrer_defi(equipe, inventaire)
-                explorations = 0
-
-                if victoire:
-                    print("\n🔥 Tu sors victorieux de l'Arène Pyronis avec le Badge Flamme !")
-                    # Débloquer la prochaine zone (Verdania) -> on revient au menu, mais etape passe à 2
-                    print("\nLa route s’ouvre vers une forêt luxuriante... L’Arène Verdania (Plante) t’attend !")
-                    etape = 2
-                else:
-                    print("\nTu quittes l’arène pour t’entraîner avant de revenir.")
-
-            else:
-                print("\nTu décides de ne pas entrer et continues ton aventure.")
-
+        # Arène Plante
         elif nom_arene == "Arène Verdania":
-            print("\nSouhaites-tu entrer dans l’Arène Verdania ?")
-            print("1. Oui, je veux défier les dresseurs")
-            print("2. Non, je préfère continuer à explorer")
-            choix_arene = input("-> ").lower()
+            print("\n🌿 Tu entres dans l’Arène Verdania...")
+            victoire = creer_arene_plante().demarrer_defi(equipe, inventaire)
+            if victoire:
+                print("\nTu gagnes le Badge Verdure ! 🍃")
+                etape = 3
 
-            if choix_arene == "1":
-                print("\nTu entres dans l'Arène Verdania...")
-                arene_plante = creer_arene_plante()
-                victoire = arene_plante.demarrer_defi(equipe, inventaire)
-                explorations = 0
-
-                if victoire:
-                    print("\n🌿 Tu sors victorieux de l'Arène Verdania avec le Badge Verdure !")
-                    # Débloquer Hydrolys
-                    print("\nUn sentier longeant une rivière te mène à l’Arène Hydrolys (Eau) !")
-                    etape = 3
-                else:
-                    print("\nTu quittes l’arène pour t’entraîner avant de revenir.")
-
-            else:
-                print("\nTu décides de ne pas entrer et continues ton aventure.")
-
+        # Arène Eau
         elif nom_arene == "Arène Hydrolys":
-            print("\nSouhaites-tu entrer dans l’Arène Hydrolys ?")
-            print("1. Oui, je veux défier les dresseurs")
-            print("2. Non, je préfère continuer à explorer")
-            choix_arene = input("-> ").lower()
+            print("\n💧 Tu entres dans l’Arène Hydrolys...")
+            victoire = creer_arene_eau().demarrer_defi(equipe, inventaire)
+            if victoire:
+                print("\nTu gagnes le Badge Cascade ! 🏆")
+                etape = 4
+                print("\nFélicitations, tu as terminé les trois premières arènes !")
 
-            if choix_arene == "1":
-                print("\nTu entres dans l'Arène Hydrolys...")
-                arene_eau = creer_arene_eau()
-                victoire = arene_eau.demarrer_defi(equipe, inventaire)
-                explorations = 0
-
-                if victoire:
-                    print("\n💧 Tu sors victorieux de l'Arène Hydrolys avec le Badge Cascade !")
-                    print("\n🏆 Félicitations ! Tu as remporté les trois premiers badges de la Ligue !")
-                    print("Tu peux continuer à explorer, entraîner ton équipe, et compléter ton Pokédex !")
-                    # etape > 3 => plus d'arènes, on garde l'exploration
-                    etape = 4
-                else:
-                    print("\nTu quittes l’arène pour t’entraîner avant de revenir.")
-
-            else:
-                print("\nTu décides de ne pas entrer et continues ton aventure.")
-
-        else:
-            print("\nAucune arène accessible pour le moment.")
-
-    # --- Quitter le jeu
-    elif (action == "5" and arene_disponible_nom(etape) is None) or (action == "6" and arene_disponible_nom(etape) is not None):
+    # --- Quitter le jeu ---
+    elif (action == "5" and not arene_disponible_nom(etape)) or (action == "6" and arene_disponible_nom(etape)):
         print("\nMerci d’avoir joué, à bientôt 👋")
         break
 

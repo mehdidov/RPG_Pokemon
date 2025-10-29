@@ -1,7 +1,16 @@
 import random
 
+# =====================================================
+# Fichier : combat.py
+# Gère les combats entre le joueur et un Pokémon adverse
+# =====================================================
+
 # --- Tableau d’efficacité des types ---
 def calculer_multiplicateur(type_attaquant, type_defenseur):
+    """
+    Retourne un multiplicateur de dégâts selon les types :
+    Feu, Eau, Plante (triangulaire classique).
+    """
     avantages = {
         "Feu": {"Plante": 2.0, "Eau": 0.5, "Feu": 0.5},
         "Eau": {"Feu": 2.0, "Plante": 0.5, "Eau": 0.5},
@@ -10,8 +19,17 @@ def calculer_multiplicateur(type_attaquant, type_defenseur):
     return avantages.get(type_attaquant, {}).get(type_defenseur, 1.0)
 
 
-def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
-    # Trouve le premier Pokémon vivant
+# =====================================================
+# Fonction principale : lancer un combat
+# =====================================================
+def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True, arene=False):
+    """
+    - equipe : liste des Pokémon du joueur
+    - pokemon_adverse : Pokémon adverse
+    - inventaire : objets disponibles
+    - choix_libre : True si c’est un combat sauvage (on peut fuir)
+    - arene : True si c’est un combat d’arène (fuite impossible)
+    """
     vivants = [p for p in equipe if p.est_vivant()]
     if not vivants:
         print("\nTous tes Pokémon sont K.O. ! Tu ne peux pas combattre.")
@@ -20,7 +38,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
     pokemon_joueur = vivants[0]
     modificateur_global = 0.6  # ⚖️ Réduction générale des dégâts
 
-    # Codes couleur
+    # Codes couleur pour lisibilité
     ROUGE = "\033[91m"
     VERT = "\033[92m"
     JAUNE = "\033[93m"
@@ -28,6 +46,9 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
     BLANC = "\033[97m"
     RESET = "\033[0m"
 
+    # =====================================================
+    # Boucle de combat principale
+    # =====================================================
     while any(p.est_vivant() for p in equipe) and pokemon_adverse.est_vivant():
         print(f"\n{JAUNE}------------------------------{RESET}")
         print(f"{BLEU}Ton Pokémon : {BLANC}{pokemon_joueur.nom} ({pokemon_joueur.type}) - "
@@ -40,16 +61,19 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
         print("1. Attaquer")
         print("2. Changer de Pokémon")
         print("3. Utiliser un objet")
-        print("0. Fuir le combat")
+        if not arene:  # 🔒 Fuite interdite en arène
+            print("0. Fuir le combat")
+
         choix = input("-> ").strip()
 
-        # --- Attaquer ---
+        # -----------------------------------------------------
+        # Option 1 : Attaquer
+        # -----------------------------------------------------
         if choix == "1":
             if not pokemon_joueur.est_vivant():
                 print(f"\n{pokemon_joueur.nom} est K.O. et ne peut pas attaquer !")
                 continue
 
-            # Menu des attaques
             print(f"\nChoisis une attaque pour {pokemon_joueur.nom} :")
             for i, (nom_attaque, puissance) in enumerate(pokemon_joueur.attaques, 1):
                 print(f"{i}. {nom_attaque} ({puissance} dégâts)")
@@ -57,8 +81,8 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
 
             choix_attaque = input("-> ").strip()
             if choix_attaque == "0":
-                continue  # Retour au menu principal
-            if not choix_attaque.isdigit() or int(choix_attaque) < 1 or int(choix_attaque) > len(pokemon_joueur.attaques):
+                continue
+            if not choix_attaque.isdigit() or not (1 <= int(choix_attaque) <= len(pokemon_joueur.attaques)):
                 print("Choix invalide.")
                 continue
 
@@ -66,10 +90,7 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             mult = calculer_multiplicateur(pokemon_joueur.type, pokemon_adverse.type)
             degats = int(puissance * mult * modificateur_global)
 
-            print(f"\n{BLANC}{pokemon_joueur.nom}{RESET} attaque {ROUGE}{pokemon_adverse.nom}{RESET} !")
-            print(f"{pokemon_joueur.nom} utilise {JAUNE}{nom_attaque}{RESET} !")
-
-            # Effet visuel selon efficacité
+            print(f"\n{pokemon_joueur.nom} utilise {JAUNE}{nom_attaque}{RESET} !")
             if mult > 1:
                 print(f"{VERT}C’est super efficace ! 💥{RESET}")
             elif mult < 1:
@@ -78,7 +99,9 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             print(f"{BLANC}{pokemon_joueur.nom}{RESET} inflige {degats} dégâts à {pokemon_adverse.nom} !")
             pokemon_adverse.subir_degats(degats)
 
-        # --- Changer de Pokémon ---
+        # -----------------------------------------------------
+        # Option 2 : Changer de Pokémon
+        # -----------------------------------------------------
         elif choix == "2":
             print("\nChoisis un Pokémon à envoyer :")
             for i, p in enumerate(equipe, 1):
@@ -103,10 +126,10 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             else:
                 print("Choix invalide.")
 
-        # --- Utiliser un objet ---
+        # -----------------------------------------------------
+        # Option 3 : Utiliser un objet
+        # -----------------------------------------------------
         elif choix == "3" and inventaire:
-            
-
             print("\nObjets disponibles :")
             compteur = {}
             for item in inventaire:
@@ -149,24 +172,30 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             else:
                 print("Choix invalide.")
 
-        # --- Fuir ---
+        # -----------------------------------------------------
+        # Option 0 : Fuir (interdite dans une arène)
+        # -----------------------------------------------------
         elif choix == "0":
-            print("Tu fuis le combat...")
-            return "annule"
+            if arene:
+                print(f"\n{ROUGE}⚠️ Tu ne peux pas fuir un combat d’Arène !{RESET}")
+                continue
+            else:
+                print("Tu fuis le combat...")
+                return "annule"
 
         else:
             print("Choix invalide.")
             continue
 
-        # --- L’adversaire attaque ---
+        # -----------------------------------------------------
+        # Tour de l’adversaire
+        # -----------------------------------------------------
         if pokemon_adverse.est_vivant() and pokemon_joueur.est_vivant():
-            attaque_adverse = random.choice(pokemon_adverse.attaques)
-            nom_attaque, puissance = attaque_adverse
+            nom_attaque, puissance = random.choice(pokemon_adverse.attaques)
             mult = calculer_multiplicateur(pokemon_adverse.type, pokemon_joueur.type)
             degats = int(puissance * mult * modificateur_global)
 
-            print(f"\n{ROUGE}{pokemon_adverse.nom}{RESET} attaque !")
-            print(f"{pokemon_adverse.nom} utilise {JAUNE}{nom_attaque}{RESET} !")
+            print(f"\n{ROUGE}{pokemon_adverse.nom}{RESET} utilise {JAUNE}{nom_attaque}{RESET} !")
             if mult > 1:
                 print(f"{ROUGE}C’est super efficace contre toi ! 💥{RESET}")
             elif mult < 1:
@@ -175,7 +204,9 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             print(f"{pokemon_adverse.nom} inflige {degats} dégâts à {pokemon_joueur.nom} !")
             pokemon_joueur.subir_degats(degats)
 
-        # --- Pokémon K.O. ---
+        # -----------------------------------------------------
+        # Si ton Pokémon est K.O.
+        # -----------------------------------------------------
         if not pokemon_joueur.est_vivant() and any(p.est_vivant() for p in equipe):
             print(f"\n{pokemon_joueur.nom} est {ROUGE}K.O.{RESET} !")
             vivants = [p for p in equipe if p.est_vivant()]
@@ -189,7 +220,9 @@ def lancer_combat(equipe, pokemon_adverse, inventaire=None, choix_libre=True):
             else:
                 print("Choix invalide. Tu perds ton tour.")
 
-    # --- Fin du combat ---
+    # =====================================================
+    # Fin du combat
+    # =====================================================
     if not any(p.est_vivant() for p in equipe):
         print(f"\n{ROUGE}Tous tes Pokémon sont K.O. ! Tu as perdu le combat.{RESET}")
         return "defaite"
