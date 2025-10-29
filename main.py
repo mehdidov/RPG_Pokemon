@@ -189,4 +189,12 @@ while True:
                 CombattantArene("Rouge le Champion", Pokemon("Simiabraz", "Feu", 47, 17))
             ]
 
+            arene_feu = Arene("Arène Pyronis", "Feu", "Flamme", dresseurs_feu)
+
+            print(f"\nBienvenue dans l'{arene_feu.nom} (type {arene_feu.type}) !")
+            print("Tu devras gravir les 5 étages et battre chaque dresseur pour atteindre le champion.")
+            print("Les fuites sont interdites ici !")
+            victoire = arene_feu.demarrer_defi(equipe)
+            explorations = 0
+
             
