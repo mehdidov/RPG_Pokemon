@@ -14,7 +14,6 @@ while True:
 
     choix = input("-> ").strip()
 
-    
     if choix.isdigit():
         index = int(choix) - 1
         if 0 <= index < len(dresseurs):
@@ -32,7 +31,7 @@ while True:
     else:
         print("Nom invalide, réessaie.")
 
-print(f"\nBienvenue {dresseur} 👋 ! Ton aventure commence maintenant.")
+print(f"\nBienvenue {dresseur} ! Ton aventure commence maintenant.")
 
 # Choix du starter
 print("\nC’est le moment de choisir ton premier Pokémon !")
@@ -65,7 +64,6 @@ pokemons_sauvages = [
     Pokemon("Mystherbe", "Plante", 30, 7)
 ]
 
-
 while True:
     print("\nQue veux-tu faire ?")
     print("1. Explorer la route")
@@ -74,29 +72,37 @@ while True:
     action = input("-> ").lower()
 
     if action == "1":
-        print("\nTu explores la route... ")
+        print("\nTu explores la route...")
 
-    
         if random.random() < 0.7:
             modele = random.choice(pokemons_sauvages)
             sauvage = Pokemon(modele.nom, modele.type, modele.pv_max, modele.attaque)
             print(f"Un {sauvage.nom} sauvage apparaît ! (Type {sauvage.type}, {sauvage.pv} PV)")
 
-            
-            while True:
+            combat_termine = False
+
+            while sauvage.est_vivant() and any(p.est_vivant() for p in equipe):
+                if combat_termine:
+                    break
+
                 print("\nQue veux-tu faire ?")
                 print("1. Combattre")
                 print("2. Capturer")
-                print("3. Fuir" )
+                print("3. Fuir")
                 choix_action = input("-> ").lower()
 
                 # Combat
                 if choix_action in ["1", "combattre"]:
                     if not equipe[0].est_vivant():
                         print(f"\n{equipe[0].nom} est K.O. ! Il faut le soigner avant de combattre.")
+                        continue
+                    resultat = lancer_combat(equipe[0], sauvage, choix_libre=True)
+                    if resultat == "annule":
+                        continue
+                    elif resultat == "victoire":
+                        print(f"Tu as vaincu {sauvage.nom} !")
+                        combat_termine = True
                         break
-                    lancer_combat(equipe[0], sauvage)
-                    break  
 
                 # Capture 
                 elif choix_action in ["2", "capturer"]:
@@ -105,6 +111,8 @@ while True:
                         if len(equipe) < 6:
                             equipe.append(sauvage)
                             print(f"Tu as capturé {sauvage.nom} !")
+                            combat_termine = True
+                            break
                         else:
                             print("Ton équipe est déjà pleine (6 Pokémon max) !")
                             print("Voici ton équipe actuelle :")
@@ -120,26 +128,36 @@ while True:
                                         ancien = equipe[index]
                                         equipe[index] = sauvage
                                         print(f"Tu as remplacé {ancien.nom} par {sauvage.nom} !")
+                                        combat_termine = True
+                                        break
                                     else:
                                         print("Numéro invalide.")
                                 else:
                                     print("Entrée invalide, capture annulée.")
                             else:
                                 print(f"Tu laisses {sauvage.nom} repartir.")
+                                combat_termine = True
+                                break
                     else:
                         print(f"{sauvage.nom} s’est échappé de la Pokéball !")
-                    break  
+                        # Le combat continue
 
                 # Fuite 
                 elif choix_action in ["3", "fuir"]:
                     print("Tu fuis en sécurité.")
+                    combat_termine = True
                     break
 
                 else:
                     print("Choix invalide, réessaie.")
 
+            # Fin de la rencontre
+            if combat_termine:
+                print("Tu reprends ta route tranquillement...")
+                continue  
+
         else:
-            print("Rien à signaler... ")
+            print("Rien à signaler...")
 
     elif action == "2":
         print(f"\nÉquipe de {dresseur} :")
@@ -148,7 +166,7 @@ while True:
         print(f"Total : {len(equipe)}/6 Pokémon")
 
     elif action == "3":
-        print("\nMerci d’avoir joué, à bientôt ")
+        print("\nMerci d’avoir joué, à bientôt")
         break
 
     else:
