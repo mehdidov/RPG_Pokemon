@@ -39,27 +39,26 @@ class Arene :
                 print("Choix invalide. Essaie encore.")
                 continue
         
-        
-        
-        
-        """for i, dresseur in enumerate(self.dresseurs, 1):
-            print(f"\n⬆Étage {i} : tu affrontes {dresseur.nom} avec son {dresseur.pokemon.nom} ({dresseur.pokemon.type}) !")
-
             resultat = lancer_combat(equipe, dresseur.pokemon, choix_libre=False)
 
-
             if resultat != "victoire":
-                print(f"\nTu as perdu contre {dresseur.nom} à l’étage {i}... Tu es expulsé de l’arène.")
+                print(f"\nTu as perdu contre {dresseur.nom} à l’étage {etage + 1}... Tu es expulsé de l’arène.")
                 return False
             else:
-                if i < len(self.dresseurs):
-                    print(f"Tu as battu {dresseur.nom} ! Tu montes à l’étage suivant.")
+                print(f"\nTu as battu {dresseur.nom} !")
+
+                # AJOUT : pause et narration avant de monter au prochain étage
+                if etage < len(self.dresseurs) - 1:
+                    print("\nTu reprends ton souffle avant de gravir les marches vers le prochain étage...")
+                    input("\n(Appuie sur Entrée pour continuer)")
+                    etage += 1
                 else:
-                    print(f"Tu as vaincu le champion {dresseur.nom} !")
+                    print(f"\nTu as vaincu le champion {dresseur.nom} !")
+                    print(f"\nFélicitations ! Tu remportes le badge {self.badge} !")
+                    return True
 
-        print(f"\nFélicitations ! Tu remportes le badge {self.badge} !")
-        return True"""
-
+        
+        
 class CombattantArene : 
     def __init__(self, nom, pokemon):
         self.nom = nom
