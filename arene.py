@@ -17,6 +17,15 @@ class Arene :
             dresseur = self.dresseurs[etage]
             print(f"\nÉtage {etage + 1} : tu affrontes {dresseur.nom} avec son {dresseur.pokemon.nom} ({dresseur.pokemon.type}) !")
 
+            print("\nQue veux-tu faire ?")
+            print("1. Affronter ce dresseur")
+            if etage > 0:
+                print("2. Descendre d’un étage")
+            else:
+                print("2. Quitter l’arène")
+
+            choix = input("-> ")
+
         
         
         
