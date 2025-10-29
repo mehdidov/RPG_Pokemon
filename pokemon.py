@@ -1,61 +1,52 @@
 import random
 
 class Pokemon:
-    def __init__(self, nom, type, pv, attaque):
+    def __init__(self, nom, type_, pv_max, attaques):
         self.nom = nom
-        self.type = type
-        self.pv_max = pv
-        self.pv = pv
-        self.attaque = attaque
-        self.attaques = [
-            {"nom": "Charge", "puissance": 5, "type": "Normal"},
-            {"nom": "Morsure", "puissance": 7, "type": "Normal"}
-        ]
-
-     
-
-    def attaquer(self, autre, attaque_choisie=None):
-        
-        if attaque_choisie is None:
-            attaque_choisie = random.choice(self.attaques)
-
-        print(f"\n{self.nom} utilise {attaque_choisie['nom']} !")
-
-        degats = attaque_choisie['puissance']
-        autre.pv -= degats
-        if autre.pv < 0:
-            autre.pv = 0
-
-        print(f"{autre.nom} a maintenant {autre.pv} PV.")
+        self.type = type_
+        self.pv_max = pv_max
+        self.pv = pv_max
+        self.attaques = attaques  # Liste de tuples (nom, puissance)
 
     def est_vivant(self):
         return self.pv > 0
 
     def soigner(self, montant):
+        if self.pv == self.pv_max:
+            print(f"{self.nom} a déjà tous ses PV.")
+            return False
+        avant = self.pv
         self.pv = min(self.pv + montant, self.pv_max)
-        print(f"{self.nom} récupère {montant} PV. ({self.pv}/{self.pv_max})")
+        print(f"{self.nom} est soigné ({avant} → {self.pv} PV).")
+        return True
 
+    def subir_degats(self, degats):
+        self.pv = max(0, self.pv - degats)
 
+    def choisir_attaque(self):
+        print("\nChoisis une attaque :")
+        for i, (nom, puissance) in enumerate(self.attaques, 1):
+            print(f"{i}. {nom} (puissance {puissance})")
+
+        while True:
+            choix = input("-> ").strip()
+            if choix.isdigit() and 1 <= int(choix) <= len(self.attaques):
+                return self.attaques[int(choix) - 1]
+            else:
+                print("Choix invalide.")
+
+# Pokémons de base
 class PokemonFeu(Pokemon):
     def __init__(self):
-        super().__init__("Poussifeu", "Feu", 41, 10)
-        self.attaques = [
-            {"nom": "Flammèche", "puissance": 10, "type": "Feu"},
-            {"nom": "Griffe", "puissance": 6, "type": "Normal"}
-        ]
+        attaques = [("Griffe", 10), ("Flammèche", 12), ("Crocs Feu", 15), ("Danseflamme", 18)]
+        super().__init__("Poussifeu", "Feu", 41, attaques)
 
 class PokemonEau(Pokemon):
     def __init__(self):
-        super().__init__("Grenouss", "Eau", 42, 9)
-        self.attaques = [
-            {"nom": "Pistolet à O", "puissance": 9, "type": "Eau"},
-            {"nom": "Charge", "puissance": 7, "type": "Normal"}
-        ]
+        attaques = [("Écume", 10), ("Pistolet à O", 12), ("Coup de Queue", 14), ("Hydroqueue", 18)]
+        super().__init__("Grenouss", "Eau", 40, attaques)
 
 class PokemonPlante(Pokemon):
     def __init__(self):
-        super().__init__("Bulbizarre", "Plante", 40, 11)
-        self.attaques = [
-            {"nom": "Fouet Lianes", "puissance": 9, "type": "Plante"},
-            {"nom": "Charge", "puissance": 7, "type": "Normal"}
-        ]
+        attaques = [("Fouet Lianes", 10), ("Tranch’Herbe", 12), ("Canon Graine", 15), ("Vampigraine", 18)]
+        super().__init__("Bulbizarre", "Plante", 42, attaques)
