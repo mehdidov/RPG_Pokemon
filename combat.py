@@ -6,10 +6,10 @@ def lancer_combat(pokemon_joueur, pokemon_sauvage):
 
     while pokemon_joueur.est_vivant() and pokemon_sauvage.est_vivant():
         print("\nTon tour")
-        print("Choisis une attaque :")
+        print("\nVoici tes attaques :")
 
         for i, atq in enumerate(pokemon_joueur.attaques, 1):
-            print(f"{i}. {atq['nom']} ({atq['puissance']} dégâts)")
+            print(f"{i}. {atq['nom']} ({atq['puissance']} dégâts,type {atq['type']})")
 
         choix = input("-> ").strip()
 
